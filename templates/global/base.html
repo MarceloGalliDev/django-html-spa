@@ -1,0 +1,23 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    {% include 'global/partials/head.html' %}
+    <title>Guru Spoc</title>
+</head>
+
+<body>
+    {% include 'global/partials/header.html' %}
+    
+    <main class="root-container">
+        {% block content %}{% endblock content %}
+    </main>
+
+    {% include 'global/partials/footer.html' %}
+
+    <script src="{% static 'global/js/scripts.js' %}"></script>
+</body>
+
+</html>
