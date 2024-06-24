@@ -3,5 +3,5 @@ from .views import CadastroCorretoraView
 
 
 urlpatterns = [
-    path('cadastro/', CadastroCorretoraView.as_view(), name='cadastro_corretora'),
+    path('', CadastroCorretoraView.as_view(), name='cadastro_corretora'),
 ]

@@ -1,3 +1,8 @@
 from django.contrib import admin
+from .models import Corretora
 
-# Register your models here.
+
+@admin.register(Corretora)
+class CorretoraAdmin(admin.ModelAdmin):
+    list_display = ['nome_corretora', 'telefone', 'email', 'cnpj', 'pessoa_contato', 'concordo']
+    search_fields = ['nome_corretora', 'email']

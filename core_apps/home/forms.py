@@ -51,6 +51,7 @@ class CorretoraForm(forms.ModelForm):
         "duplicate_cnpj": "Um formulário com este CNPJ já foi enviado.",
         "cnpj_error": "O CNPJ deve conter apenas números.",
         "telefone_error": "O telefone deve conter apenas números.",
+        "concordo_error": "Você deve concordar com os termos para se cadastrar.",
     }
 
     def clean_email(self) -> str:
@@ -61,14 +62,12 @@ class CorretoraForm(forms.ModelForm):
 
     def clean_cnpj(self) -> str:
         cnpj = self.cleaned_data["cnpj"]
-        if not cnpj.isdigit():
-            raise forms.ValidationError(self.error_messages["cnpj_error"])
         if Corretora.objects.filter(cnpj=cnpj).exists():
             raise forms.ValidationError(self.error_messages["duplicate_cnpj"])
         return cnpj
 
-    def clean_telefone(self) -> str:
-        telefone = self.cleaned_data["telefone"]
-        if not telefone.isdigit():
-            raise forms.ValidationError(self.error_messages["telefone_error"])
-        return telefone
+    def clean_concordo(self):
+        concordo = self.cleaned_data.get("concordo")
+        if not concordo:
+            raise forms.ValidationError(self.error_messages["concordo_error"])
+        return concordo

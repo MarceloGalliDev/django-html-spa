@@ -1,51 +1,121 @@
-<div class="main-content">
-    <form 
-      class="main-form"
-      action="{{ form_action }}" 
-      method="POST"
-      enctype="multipart/form-data"  
-    >
-      {% csrf_token %}
-  
-      <div class="form-content form-content-grid">
+{% load static %}
 
-        {% for field in form %}
-
-          <div class="form-group {{ field.field.widget.attrs.class }}">
-            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-            {{field}}
-  
-            {% if field.help_text %}
-              <p class="help-text">{{ field.help_text }}</p>
-            {% endif %}
-  
-            {{ field.errors }}
-          </div>
-  
-          {% if field.name == 'cover' and field.value.url %}
-            <div class="span-2">
-              <img src="{{ field.value.url }}" alt="Capa para {{ recipe.title }}">
+<div class="container" id="main-content">
+    <div class="container-aside-form">
+        <div class="noticias-content">
+            <h1>Notícias</h1>
+        </div>
+        <div class="form-text">
+            <h1>Transformação digital em Seguros</h1>
+            <p>A Guru Spoc lidera a transformação digital no setor de seguros, oferecendo uma plataforma onde a inovação encontra a segurança.</p>
+            <p>Com nossa tecnologia de ponta, corretores podem acessar, em tempo real, soluções de seguros adaptadas às necessidades de cada cliente.</p>
+            <p><strong>Faça seu cadastro e experimente a eficiência que redefine o futuro dos seguros.</strong></p>
+        </div>
+    </div>
+    <div class="form-container">
+        <form id="cadastro-form" action="{% url 'cadastro_corretora' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="{{ form.nome_corretora.id_for_label }}">Nome da corretora</label>
+                {{ form.nome_corretora }}
+                <div class="error-message" id="error-nome_corretora"></div>
             </div>
-          {% endif %}
-          
-        {% endfor %}
+            <div class="form-group">
+                <label for="{{ form.telefone.id_for_label }}">Telefone</label>
+                {{ form.telefone }}
+                <div class="error-message" id="error-telefone"></div>
+            </div>
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">E-mail</label>
+                {{ form.email }}
+                <div class="error-message" id="error-email"></div>
+            </div>
+            <div class="form-group">
+                <label for="{{ form.cnpj.id_for_label }}">CNPJ</label>
+                {{ form.cnpj }}
+                <div class="error-message" id="error-cnpj"></div>
+            </div>
+            <div class="form-group">
+                <label for="{{ form.pessoa_contato.id_for_label }}">Pessoa para contato</label>
+                {{ form.pessoa_contato }}
+                <div class="error-message" id="error-pessoa_contato"></div>
+            </div>
+            <div class="form-group-checkbox checkbox">
+                {{ form.concordo }}
+                <label for="{{ form.concordo.id_for_label }}">Concordo que os dados fornecidos acima permita que a Guru Spoc armazene e processe tais informações para fins de contato.</label>
+            </div>
+            <div class="error-message" id="error-concordo"></div>
+            <div class="form-group">
+                <button type="submit" class="btn-submit">Cadastrar</button>
+            </div>
+        </form>
+    </div>
+</div>
 
-      </div>
-  
-      {% if form.errors %}
-      <div class="form-content form-content-grid">
-        <div class="form-group">
-          <div class="message message-error">
-            There are errors in the form, please fix them and send again.
-          </div>
-        </div>
-      </div>
-      {% endif %}
-  
-      <div class="form-content form-content-grid">
-        <div class="form-group">
-          <button type="submit">Send</button>
-        </div>
-      </div>
-    </form>
-  </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.9/jquery.inputmask.min.js" integrity="sha512-F5Ul1uuyFlGnIT1dk2c4kB4DBdi5wnBJjVhL7gQlGh46Xn0VhvD8kgxLtjdZ5YN83gybk/aASUAlpdoWUjRR3g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    $(document).ready(function(){
+        $("[name='telefone']").inputmask({
+            mask: "(99) 9999[9]-9999",
+            keepStatic: true
+        });
+
+        $("[name='cnpj']").inputmask({
+            mask: "99[9].999.999/9999-99",
+            keepStatic: true
+        });
+
+
+        $("#cadastro-form").on("submit", function(event) {
+            event.preventDefault();
+            if (!$("#id_concordo").is(":checked")) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Aviso',
+                    padding: "3em",
+                    text: 'Você deve concordar com os termos para se cadastrar.',
+                });
+                return;
+            }
+
+            var formData = $(this).serialize();
+
+        $.ajax({
+            url: "{% url 'cadastro_corretora' %}",
+            type: "POST",
+            data: formData,
+            success: function(response) {
+                if (response.success) {
+                    Swal.fire({
+                        position: "top-end",
+                        icon: 'success',
+                        title: 'Sucesso',
+                        text: 'Cadastro realizado com sucesso!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        // Limpar os campos do formulário após o sucesso
+                        $("#cadastro-form")[0].reset();
+                    });
+                } else {
+                    // Exibir erros de validação
+                    $(".error-message").empty(); // Limpar mensagens de erro existentes
+                    for (var field in response.errors) {
+                        $("#error-" + field).text(response.errors[field]);
+                    }
+                }
+            },
+            error: function(response) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro',
+                    text: 'Ocorreu um erro ao processar o formulário. Tente novamente.',
+                });
+                }
+            });
+        });
+    });
+</script>
