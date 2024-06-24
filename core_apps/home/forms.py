@@ -37,14 +37,10 @@ class CorretoraForm(forms.ModelForm):
         label='CNPJ',
         help_text='Digite um CNPJ válido.',
     )
-    pessoa_contato = forms.CharField(
-        label='Contato',
-        help_text='Digite seu nome.'
-    )
 
     class Meta:
         model = Corretora
-        fields = ['nome_corretora', 'telefone', 'email', 'cnpj', 'pessoa_contato', 'concordo']
+        fields = ['nome_corretora', 'telefone', 'email', 'cnpj', 'pessoa_contato']
 
     error_messages = {
         "duplicate_email": "Um formulário com este e-mail já foi enviado.",
@@ -65,9 +61,3 @@ class CorretoraForm(forms.ModelForm):
         if Corretora.objects.filter(cnpj=cnpj).exists():
             raise forms.ValidationError(self.error_messages["duplicate_cnpj"])
         return cnpj
-
-    def clean_concordo(self):
-        concordo = self.cleaned_data.get("concordo")
-        if not concordo:
-            raise forms.ValidationError(self.error_messages["concordo_error"])
-        return concordo

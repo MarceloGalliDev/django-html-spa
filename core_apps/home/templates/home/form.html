@@ -40,13 +40,8 @@
                 {{ form.pessoa_contato }}
                 <div class="error-message" id="error-pessoa_contato"></div>
             </div>
-            <div class="form-group-checkbox checkbox">
-                {{ form.concordo }}
-                <label for="{{ form.concordo.id_for_label }}">Concordo que os dados fornecidos acima permita que a Guru Spoc armazene e processe tais informações para fins de contato.</label>
-            </div>
-            <div class="error-message" id="error-concordo"></div>
             <div class="form-group">
-                <button type="submit" class="btn-submit">Cadastrar</button>
+                <button type="submit" class="btn-submit">Inscrever</button>
             </div>
         </form>
     </div>
@@ -68,52 +63,42 @@
             keepStatic: true
         });
 
-
         $("#cadastro-form").on("submit", function(event) {
             event.preventDefault();
-            if (!$("#id_concordo").is(":checked")) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Aviso',
-                    padding: "3em",
-                    text: 'Você deve concordar com os termos para se cadastrar.',
-                });
-                return;
-            }
 
             var formData = $(this).serialize();
 
-        $.ajax({
-            url: "{% url 'cadastro_corretora' %}",
-            type: "POST",
-            data: formData,
-            success: function(response) {
-                if (response.success) {
-                    Swal.fire({
-                        position: "top-end",
-                        icon: 'success',
-                        title: 'Sucesso',
-                        text: 'Cadastro realizado com sucesso!',
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(() => {
-                        // Limpar os campos do formulário após o sucesso
-                        $("#cadastro-form")[0].reset();
-                    });
-                } else {
-                    // Exibir erros de validação
-                    $(".error-message").empty(); // Limpar mensagens de erro existentes
-                    for (var field in response.errors) {
-                        $("#error-" + field).text(response.errors[field]);
+            $.ajax({
+                url: "{% url 'cadastro_corretora' %}",
+                type: "POST",
+                data: formData,
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({
+                            position: "top-end",
+                            icon: 'success',
+                            title: 'Sucesso',
+                            text: 'Cadastro realizado com sucesso!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            // Limpar os campos do formulário após o sucesso
+                            $("#cadastro-form")[0].reset();
+                        });
+                    } else {
+                        // Exibir erros de validação
+                        $(".error-message").empty(); // Limpar mensagens de erro existentes
+                        for (var field in response.errors) {
+                            $("#error-" + field).text(response.errors[field]);
+                        }
                     }
-                }
-            },
-            error: function(response) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Erro',
-                    text: 'Ocorreu um erro ao processar o formulário. Tente novamente.',
-                });
+                },
+                error: function(response) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erro',
+                        text: 'Ocorreu um erro ao processar o formulário. Tente novamente.',
+                    });
                 }
             });
         });
