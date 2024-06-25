@@ -12,6 +12,9 @@ up:
 down:
 	docker compose -f local.yml down -v
 
+deploy:
+	docker compose -f local.yml run --rm api python manage.py check --deploy
+
 docker-config:
 	docker compose -f local.yml config
 
