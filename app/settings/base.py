@@ -4,7 +4,6 @@ Django settings for config project.
 
 from pathlib import Path
 from os import getenv, path
-import cloudinary
 from dotenv import load_dotenv  # type: ignore
 
 
@@ -30,8 +29,6 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = [
     'djcelery_email',
-    'cloudinary',
-    'django_celery_beat'
 ]
 
 LOCAL_APPS = [
@@ -71,23 +68,23 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'app.wsgi.application'
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'HOST': getenv("POSTGRES_HOST"),
-#         'PORT': getenv("POSTGRES_PORT"),
-#         'NAME': getenv("POSTGRES_DB"),
-#         'USER': getenv("POSTGRES_USER"),
-#         'PASSWORD': getenv("POSTGRES_PASSWORD"),
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'mydatabase',
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': getenv("POSTGRES_HOST"),
+        'PORT': getenv("POSTGRES_PORT"),
+        'NAME': getenv("POSTGRES_DB"),
+        'USER': getenv("POSTGRES_USER"),
+        'PASSWORD': getenv("POSTGRES_PASSWORD"),
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': 'mydatabase',
+#     }
+# }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -144,26 +141,3 @@ CELERY_RESULT_BACKEND_ALWAYS_RETRY = True
 CELERY_TASK_TIME_LIMIT = 5*60
 
 CELERY_TASK_SOFT_TIME_LIMIT = 60
-
-CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
-
-CELERY_WORKER_SEND_TASK_EVENTS = True
-
-# configurando as tasks
-CELERY_BEAT_SCHEDULE = {
-    # configurando a chave-valor (redis)
-    "update-reputation-every-day": {
-        # task definida  no decorator shared_task o name
-        "task": "update_all_reputations"
-    }
-}
-
-CLOUDINARY_CLOUD_NAME = getenv('CLOUDINARY_CLOUD_NAME')
-CLOUDINARY_API_KEY = getenv('CLOUDINARY_API_KEY')
-CLOUDINARY_API_SECRET = getenv('CLOUDINARY_API_SECRET')
-
-cloudinary.config(
-    cloud_name=CLOUDINARY_CLOUD_NAME,
-    api_key=CLOUDINARY_API_KEY,
-    api_secret=CLOUDINARY_API_SECRET,
-)

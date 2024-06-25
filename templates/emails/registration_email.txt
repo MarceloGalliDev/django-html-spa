@@ -1,0 +1,7 @@
+Recebemos uma nova inscrição,
+
+Nome da Corretora: {{ nome_corretora }}
+Telefone: {{ telefone }}
+E-mail: {{ email }}
+CNPJ: {{ cnpj }}
+Pessoa para Contato: {{ pessoa_contato }}

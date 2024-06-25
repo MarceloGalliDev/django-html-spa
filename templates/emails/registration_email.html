@@ -1,0 +1,12 @@
+{% extends 'emails/base.html' %}
+
+{% block title %}Uma nova inscrição{% endblock title %}
+
+{% block content %}
+    <p>Recebemos uma nova inscrição,</p>
+    <p><strong>Nome da Corretora:</strong> {{ nome_corretora }}</p>
+    <p><strong>Telefone:</strong> {{ telefone }}</p>
+    <p><strong>E-mail:</strong> {{ email }}</p>
+    <p><strong>CNPJ:</strong> {{ cnpj }}</p>
+    <p><strong>Pessoa para Contato:</strong> {{ pessoa_contato }}</p>
+{% endblock content %}
