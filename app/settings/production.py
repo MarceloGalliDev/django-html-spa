@@ -37,7 +37,11 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = getenv("SECURE_HSTS_INCLUDE_SUBDOMAINS", defaul
 
 SECURE_CONTENT_TYPE_NOSNIFF = getenv("SECURE_CONTENT_TYPE_NOSNIFF", default="True")
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFIlesStorage"
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 DEFAULT_FROM_EMAIL = getenv("DEFAULT_FROM_EMAIL", default="suporte@guruspoc.com.br")
 

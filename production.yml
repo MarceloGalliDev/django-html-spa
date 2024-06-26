@@ -1,0 +1,75 @@
+services:
+  api: &api
+    build:
+      context: .
+      dockerfile: ./docker/production/django/Dockerfile
+    image: guru_spa
+    container_name: guru_spa
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/mediafiles
+    env_file:
+      - ./.envs/.env.production
+    depends_on:
+      - postgres
+      - redis
+    command: /start
+    # criado uma network separada
+    networks:
+      - reverseproxy_nw
+
+  postgres:
+    build:
+      context: .
+      dockerfile: ./docker/production/postgres/Dockerfile
+    image: guru_postgres
+    container_name: guru_postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - guru_postgres_data:/var/lib/postgresql/data
+    env_file:
+      - ./.envs/.env.production
+    networks:
+        - reverseproxy_nw
+
+  redis:
+    image: redis:7.2.5-alpine3.20
+    command: redis-server --appendonly yes
+    container_name: guru_redis
+    volumes:
+      - guru_redis_data:/data
+    networks:
+      - reverseproxy_nw
+
+  celeryworker:
+    <<: *api
+    image: guru_celeryworker
+    container_name: guru_celeryworker
+    command: /start-celeryworker
+    networks:
+      - reverseproxy_nw
+
+  flower:
+    <<: *api
+    image: guru_flower
+    container_name: guru_flower
+    volumes:
+      - flower_data:/data
+    command: /start-flower
+    ports:
+      - "5555:5555"
+    networks:
+      - reverseproxy_nw
+
+networks:
+  reverseproxy_nw:
+    external: true
+
+volumes:
+  static_volume: {}
+  media_volume: {}
+  guru_postgres_data: {}
+  logs_store: {}
+  guru_redis_data: {}
+  flower_data: {}

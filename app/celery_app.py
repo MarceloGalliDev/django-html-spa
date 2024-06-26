@@ -4,7 +4,7 @@ from celery import Celery
 from django.conf import settings
 
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "app.settings.local")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "app.settings.production")
 
 app = Celery("guru_spoc")
 
