@@ -21,8 +21,6 @@ ADMINS = [
 
 CSRF_TRUSTED_ORIGINS = ["https://guruspoc.com.br", "http://guruspoc.com.br"]
 
-DATABASES = {"default": getenv("DATABASE_URL")}
-
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 SECURE_SSL_REDIRECT = getenv("DJANGO_SECURE_SSL_REDIRECT")
